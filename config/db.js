@@ -5,7 +5,8 @@ const connectDB = async() => {
         const connection = await mongoose.connect(process.env.MONGO_URL);
         console.log(`Connect to MongoDB ${connection.connection.host}`);
     } catch (error) {
-        console.log('Nepavyko prisijungti ', error)
+        console.log('Nepavyko prisijungti ', error);
+        process.exit(1);
     }
 }
 

@@ -65,6 +65,46 @@ const loginUser = asyncHandler(async (req, res) => {
     }
   })
   
+// @desc Get user data
+// @route GET /api/users/user
+// @access PRIVATE
+const getUser = asyncHandler(async (req, res) => {
+  res.status(200).json(req.user)
+})
+
+// @desc Get users data
+// @route GET /api/users/list
+// @access PRIVATE
+const getUsers = asyncHandler(async (req, res) => {
+  const users = await User.aggregate([
+    {
+      $lookup: {
+        from: "ads",
+        localField: "_id",
+        foreignField: "user",
+        as: "ads"
+      }
+    },
+    {
+      $match: { role: 'simple' }
+    },
+    {
+      $unset: [
+        "password",
+        "createdAt",
+        "updatedAt",
+        "ads.createdAt",
+        "ads.updatedAt",
+        "ads.__v",
+        "__v"
+      ]
+    }
+  ])
+
+  res.status(200).json(users)
+})
+
+
 // Generate JWT
 const generateToken = id => {
     return jwt.sign({ id }, process.env.JWT_SECRET, {
@@ -74,5 +114,7 @@ const generateToken = id => {
 
 module.exports = {
     registerUser,
-    loginUser
+    loginUser,
+    getUser,
+    getUsers
 }

@@ -2,6 +2,14 @@ const asyncHandler = require('express-async-handler');
 
 const Ad = require('../models/adModel');
 
+// @desc Get goals
+// @route GET /api/goals
+// @access PRIVATE
+const getAds = asyncHandler(async (req, res) => {
+  const ads = await Ad.find({ user: req.user.id })
+  res.status(200).json(ads)
+})
+
 // @desc Set ads
 // @route POST /api/ads
 // @access PRIVATE
@@ -20,5 +28,6 @@ const setAd = asyncHandler(async (req, res) => {
   })
 
   module.exports = {
+    getAds,
     setAd,
   }
